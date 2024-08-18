@@ -18,14 +18,14 @@ Required:
 - `curl` : Getting websites and downloading.
 - `openssl` : Base64 decode and AES decryption.
 
-Optional: (these libraries should be in PATH)
+Optional: (these libraries/utilities should be in PATH)
 
 - `ffmpeg` : Some sources needs concatenating videos etc.
 - `mpv`/`vlc` : Playing the video in stream mode. (Default: mpv)
 
 ### Running
 
-```anido [-s] [-p player]```
+```anido [-s,--stream] [-p,--player player] [-m,--max-handles 'max curl handles']```
 
 Run the executable on your favorite terminal.
 
