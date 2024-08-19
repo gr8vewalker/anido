@@ -16,7 +16,7 @@ jobs:
       with:
         submodules: 'recursive'
     - name: install dependencies
-      run: sudo apt-get install -y libxml2-dev
+      run: sudo apt-get install -y libxml2-dev libcurl4-openssl-dev
     - uses: abel0b/setup-premake@v2.4
       with:
         version: "5.0.0-beta2"
