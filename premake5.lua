@@ -1,3 +1,12 @@
+newaction {
+   trigger     = "clean",
+   description = "Clean project files",
+   execute     = function ()
+      os.rmdir('bin')
+      os.rmdir('build')
+   end
+}
+
 require "vendor/premake-ecc/ecc"
 
 workspace "anido"
