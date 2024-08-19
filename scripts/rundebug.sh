@@ -1,4 +1,4 @@
 #!/bin/bash
 
 ./scripts/build.sh debug 
-./bin/debug/App $@
+./bin/debug/anido $@

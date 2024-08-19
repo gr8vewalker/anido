@@ -1,4 +1,4 @@
 #!/bin/bash
 
 premake5 gmake2
-make -C build config=${1:-debug}
+CFLAGS='"-DANIDO_VERSION='"\\\"$(./scripts/version.sh)\\\""'"' make -C build config=${1:-debug}
