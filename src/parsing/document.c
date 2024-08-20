@@ -7,6 +7,7 @@
 #include "libxml/xpath.h"
 
 #include "../net/connect.h"
+#include "../util/log.h"
 
 void fetch_document(const char *contents, document *doc) {
   doc->htmldoc = htmlReadMemory(contents, strlen(contents), NULL, NULL,
@@ -14,7 +15,7 @@ void fetch_document(const char *contents, document *doc) {
                                     HTML_PARSE_NOWARNING);
 
   if (doc->htmldoc == NULL) {
-    fprintf(stderr, "Failed to parse HTML\n");
+    ANIDO_ERRN("Failed to parse HTML");
     return;
   }
 
@@ -34,9 +35,9 @@ int fetch_document_url(const char *url, document *doc, const char **headers,
   }
 
   if (curlcode != 0) {
-    fprintf(stderr,
-            "An error occurred while fetching document. Curl error code: %i\n",
-            curlcode);
+    ANIDO_ERRFN(
+        "An error occurred while fetching document. Curl error code: %i",
+        curlcode);
     return 1;
   }
 
@@ -52,7 +53,7 @@ void exec_xpath(const char *xpath, document *doc,
   xmlXPathObjectPtr xpath_obj =
       xmlXPathEvalExpression((const xmlChar *)xpath, doc->xpath_ctx);
   if (xpath_obj == NULL) {
-    fprintf(stderr, "Error: unable to evaluate XPath expression \"%s\"\n",
+    ANIDO_ERRFN("Error: unable to evaluate XPath expression \"%s\"",
             xpath);
     return;
   }
@@ -60,7 +61,7 @@ void exec_xpath(const char *xpath, document *doc,
   xmlNodeSetPtr nodeset = xpath_obj->nodesetval;
 
   if (nodeset == NULL) {
-    printf("Null nodeset value for XPath expression \"%s\"\n", xpath);
+    ANIDO_LOGF_DEBUG("Null nodeset value for XPath expression \"%s\"", xpath);
   } else {
     callback(data, nodeset);
   }

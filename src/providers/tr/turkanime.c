@@ -5,6 +5,7 @@
 #include "../../parsing/anime.h"
 #include "../../parsing/document.h"
 #include "../../util/decryption.h"
+#include "../../util/log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -129,7 +130,7 @@ int __sourcext(const episode *episode, source_list **ptr) {
   source_list *list = malloc(sizeof(source_list));
 
   if (!list) {
-    fputs("Cannot allocate memory for source list\n", stderr);
+    ANIDO_ERRN("Cannot allocate memory for source list");
     return -1;
   }
 
@@ -137,7 +138,7 @@ int __sourcext(const episode *episode, source_list **ptr) {
   list->sources = malloc(0);
 
   if (!list->sources) {
-    fputs("Cannot allocate memory for sources ptr\n", stderr);
+    ANIDO_ERRN("Cannot allocate memory for sources ptr");
     return -1;
   }
 
@@ -147,7 +148,7 @@ int __sourcext(const episode *episode, source_list **ptr) {
   const char *header = "X-Requested-With: XMLHttpRequest";
 
   if (list_fansubs(episode, &fansubs) != 0) {
-    fputs("An error occurred while gathering fansubs\n", stderr);
+    ANIDO_ERRN("An error occurred while gathering fansubs");
     return -1;
   }
 
@@ -199,7 +200,7 @@ int __sourcext(const episode *episode, source_list **ptr) {
             realloc(list->sources,
                     sizeof(source) * (list->len + extracted_sources->len));
         if (!sptr) {
-          fputs("Cannot realloc sources\n", stderr);
+          ANIDO_ERRN("Cannot realloc sources");
           return -1;
         }
         list->sources = sptr;
@@ -251,7 +252,7 @@ int list_fansubs(const episode *episode, fansub_list *ptr) {
     char **lptr =
         realloc(fansub->links, sizeof(char *) * (fansub->count + others.len));
     if (!lptr) {
-      fputs("Cannot realloc fansub links\n", stderr);
+      ANIDO_ERRN("Cannot realloc fansub links");
       return -1;
     }
 

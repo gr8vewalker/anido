@@ -3,6 +3,7 @@
 #include "../../net/connect.h"
 #include "../../opt/opts.h"
 #include "../../util/video.h"
+#include "../../util/log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +56,7 @@ source_list *__extract(const char *link, const char *source_name) {
       source *ptr =
           realloc(sources->sources, (sources->len + 1) * sizeof(source));
       if (!ptr) {
-        fputs("Cannot realloc sources\n", stderr);
+        ANIDO_ERRN("Cannot realloc sources");
         return NULL;
       }
       sources->sources = ptr;
@@ -112,7 +113,7 @@ char *__download(const source *source, const char *name) {
       fprintf(concatfile, "file '%u.mp4'\n", index);
       add_to_session(session, line, filename);
       if (session->handle_count == MAX_CURL_HANDLES) {
-        printf("cURL doing its job... [%u]\n", x);
+        ANIDO_LOGFN(ESCAPE_RED "[Alucard] " ESCAPE_RESET "Downloading parts... " ESCAPE_YELLOW "[%u]" ESCAPE_RESET, x);
         perform_session(session);
       }
     } else if (strncmp(line, prefix, prefix_len) == 0) {

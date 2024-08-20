@@ -1,4 +1,5 @@
 #include "extractors.h"
+#include "../util/log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,7 +11,7 @@ char **list_extractors(int *len) {
   *len = EXTRACTOR_COUNT;
   char **extractors = calloc(EXTRACTOR_COUNT, sizeof(char *));
   if (extractors == NULL) {
-    fprintf(stderr, "Cannot allocate memory for extractors\n");
+    ANIDO_ERRN("Cannot allocate memory for extractors");
     return NULL;
   }
   extractors[0] = EXTRACTOR_ALUCARD;

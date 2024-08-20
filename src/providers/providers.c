@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../util/log.h"
+
 // providers list
 #define PROVIDER_COUNT 1
 #define PROVIDER_TURKANIME "TurkAnime"
@@ -17,7 +19,7 @@ char **list_providers(int *len) {
   *len = PROVIDER_COUNT;
   char **providers = calloc(PROVIDER_COUNT, sizeof(char *));
   if (providers == NULL) {
-    fprintf(stderr, "Cannot allocate memory for providers\n");
+    ANIDO_ERRN("Cannot allocate memory for providers");
     return NULL;
   }
   providers[0] = PROVIDER_TURKANIME;

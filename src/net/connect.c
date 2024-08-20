@@ -1,4 +1,5 @@
 #include "connect.h"
+#include "../util/log.h"
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <stdio.h>
@@ -17,7 +18,7 @@ static size_t write_string(void *contents, size_t size, size_t nmemb,
 
   char *ptr = realloc(str->string, str->size + realsize + 1);
   if (!ptr) {
-    printf("not enough memory (realloc returned NULL)\n");
+    ANIDO_ERRN("not enough memory (realloc returned NULL)");
     return 0;
   }
 

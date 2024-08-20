@@ -1,7 +1,7 @@
 #include "opts.h"
+#include "../util/log.h"
 #include "../version.h"
 #include <getopt.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 int STREAM_FLAG = 0;
@@ -28,19 +28,23 @@ void parse_opts(int argc, char **argv) {
       MAX_CURL_HANDLES = atoi(optarg);
       break;
     case 'v':
-      printf("Running anido (%s), build on %s\n", anido_version(), build_date());
+      ANIDO_LOGFN("Running anido (%s), build on %s", anido_version(),
+                  build_date());
       exit(0);
     case 'h':
-      puts("anido [options]");
-      puts("");
-      puts("Options:");
-      puts("   -s,--stream                Enables stream mode to playback the "
-           "anime instead of downloading.");
-      puts("   -p,--player=<player>       Set player to use in stream mode.");
-      puts("   -m,--max-handles=<count>   Set how many curl handles to run "
-           "parallel while downloading.");
-      puts("   -h,--help                  Show help.");
-      puts("   -v,--version               Show version.");
+      ANIDO_LOGN("anido [options]");
+      ANIDO_LOGN("");
+      ANIDO_LOGN("Options:");
+      ANIDO_LOGN(
+          "   -s,--stream                Enables stream mode to playback the "
+          "anime instead of downloading.");
+      ANIDO_LOGN(
+          "   -p,--player=<player>       Set player to use in stream mode.");
+      ANIDO_LOGN(
+          "   -m,--max-handles=<count>   Set how many curl handles to run "
+          "parallel while downloading.");
+      ANIDO_LOGN("   -h,--help                  Show help.");
+      ANIDO_LOGN("   -v,--version               Show version.");
       exit(0);
       break;
     }

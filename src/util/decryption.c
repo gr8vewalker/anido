@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../util/log.h"
+
 // BASE 64 DECODING.
 // Taken from https://gist.github.com/barrysteyn/7308212
 
@@ -121,7 +123,7 @@ unsigned char *decryptAES(char *ciphertext, char *salttext, char *password) {
 
   unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
   if (!key_and_iv(salttext, key, iv, password)) {
-    fprintf(stderr, "Cannot derive key and iv\n");
+    ANIDO_ERRN("Cannot derive key and iv");
     return NULL;
   }
 

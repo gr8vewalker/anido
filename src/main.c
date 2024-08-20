@@ -2,27 +2,13 @@
 #include "opt/opts.h"
 #include "parsing/anime.h"
 #include "util/file.h"
+#include "util/log.h"
 #include "util/video.h"
 #include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#define CLEAR() printf("\x1b[1;1H\x1b[2J");
-
-#define ANSI_BOLD "\x1b[1m"
-#define ANSI_COLOR_RED "\x1b[31m"
-#define ANSI_COLOR_GREEN "\x1b[32m"
-#define ANSI_COLOR_YELLOW "\x1b[33m"
-#define ANSI_COLOR_BLUE "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-#define ANSI_COLOR_CYAN "\x1b[36m"
-#define ANSI_COLOR_BRIGHT_GREEN "\x1b[92m"
-#define ANSI_COLOR_RESET "\x1b[0m"
-
-#define PREFIX_ARROW ANSI_COLOR_CYAN "\u276f " ANSI_COLOR_RESET
-#define PRINT_PREFIX PREFIX_ARROW ANSI_BOLD ANSI_COLOR_BRIGHT_GREEN
 
 #include "providers/providers.h"
 
@@ -42,11 +28,12 @@ int main(int argc, char **argv) {
 
   parse_opts(argc, argv);
 
+  // TODO: make this $TMPDIR/animetmp default and changeable from options
   if (remove_dir("animetmp") != 0)
-    fputs("warn: temp directory may not be fully cleared\n", stderr);
+    ANIDO_LOGN(ESCAPE_YELLOW "warn: temp directory may not be fully cleared" ESCAPE_RESET);
 
   if (create_dir("animetmp") != 0)
-    fputs("warn: temp directory may not be created\n", stderr);
+    ANIDO_LOGN(ESCAPE_YELLOW "warn: temp directory may not be created" ESCAPE_RESET);
 
   curl_global_init(CURL_GLOBAL_ALL);
 
@@ -56,7 +43,7 @@ int main(int argc, char **argv) {
   char *search_query = search_input();
 
   if (!search_query) {
-    fputs("search query string was NULL, quitting.\n", stderr);
+    ANIDO_ERRN("search query string was NULL, quitting.");
     return -1;
   }
 
@@ -65,7 +52,7 @@ int main(int argc, char **argv) {
   free(search_query);
 
   if (res == -1) {
-    fputs("search was unsuccessful, quitting.\n", stderr);
+    ANIDO_ERRN("search was unsuccessful, quitting.");
     return -1;
   }
 
@@ -90,7 +77,6 @@ int main(int argc, char **argv) {
   if (STREAM_FLAG) {
     char *stream_file;
     asprintf(&stream_file, "%s.m3u8", selected_episode->name);
-    puts(stream_file);
 
     stream_sources(sources_found, stream_file);
     run_player(PLAYER, stream_file);
@@ -113,19 +99,18 @@ int main(int argc, char **argv) {
 }
 
 void select_provider() {
-  CLEAR();
-  puts(PRINT_PREFIX "Available providers:" ANSI_COLOR_RESET);
+  CLEAR_LOG();
+  ANIDO_LOGPN("Available providers:");
 
   int len, i;
   char **providers = list_providers(&len);
 
   for (i = 0; i < len; i++) {
-    printf(ANSI_BOLD ANSI_COLOR_BLUE "%u: " ANSI_COLOR_RESET ANSI_COLOR_MAGENTA
-                                     "%s\n" ANSI_COLOR_RESET,
-           i + 1, providers[i]);
+    ANIDO_LOGFN(ESCAPE_BOLD ESCAPE_BLUE "%u: " ESCAPE_RESET ESCAPE_MAGENTA "%s",
+                i + 1, providers[i]);
   }
 
-  printf(PRINT_PREFIX "Select: " ANSI_COLOR_RESET ANSI_COLOR_BLUE);
+  ANIDO_LOGP("Select: " ESCAPE_BLUE);
 
   int sel;
   scanf(" %u", &sel);
@@ -141,17 +126,16 @@ void select_provider() {
 }
 
 char *search_input() {
-  CLEAR();
+  CLEAR_LOG();
 
-  printf(PRINT_PREFIX "Provider: " ANSI_COLOR_RESET ANSI_COLOR_RED "%s\n",
-         get_current_provider()->name);
-
-  printf(PRINT_PREFIX "Search: " ANSI_COLOR_RESET);
+  ANIDO_LOGFPN("Provider: " ESCAPE_RESET ESCAPE_RED "%s",
+               get_current_provider()->name);
+  ANIDO_LOGP("Search: ");
 
   char *search =
       calloc(500 + 1, sizeof(char)); // max 500 chars is enough i think
   if (!search) {
-    fputs("Memory allocation error!\n", stderr);
+    ANIDO_ERRN("Memory allocation error!");
     return NULL;
   }
 
@@ -160,19 +144,16 @@ char *search_input() {
 }
 
 void select_anime(const anime_list *list, anime **ptr) {
-  CLEAR();
-  printf(PRINT_PREFIX "Search results " ANSI_COLOR_RESET ANSI_COLOR_RED
-                      "(%d)\n",
-         list->len);
+  CLEAR_LOG();
+  ANIDO_LOGFPN("Search results " ESCAPE_RESET ESCAPE_RED "(%d)", list->len);
 
   for (int i = 0; i < list->len; i++) {
     anime anime = list->animes[i];
-    printf(ANSI_BOLD ANSI_COLOR_BLUE "%u: " ANSI_COLOR_RESET ANSI_COLOR_RED
-                                     "%s\n",
-           i + 1, anime.name);
+    ANIDO_LOGFN(ESCAPE_BOLD ESCAPE_BLUE "%u: " ESCAPE_RESET ESCAPE_RESET "%s",
+                i + 1, anime.name);
   }
 
-  printf(PRINT_PREFIX "Select: " ANSI_COLOR_RESET);
+  ANIDO_LOGP("Select: ");
 
   int sel;
   scanf(" %u", &sel);
@@ -190,19 +171,17 @@ void select_anime(const anime_list *list, anime **ptr) {
 }
 
 void select_episode(const anime *anime, episode **ptr) {
-  CLEAR();
-  printf(PRINT_PREFIX "Episodes for " ANSI_COLOR_RESET ANSI_COLOR_RED
-                      "%s (%d)\n",
-         anime->name, anime->episodes_len);
+  CLEAR_LOG();
+  ANIDO_LOGFPN("Episodes for " ESCAPE_RESET ESCAPE_RED "%s (%d)", anime->name,
+               anime->episodes_len);
 
   for (int i = 0; i < anime->episodes_len; i++) {
     episode episode = anime->episodes[i];
-    printf(ANSI_BOLD ANSI_COLOR_BLUE "%u: " ANSI_COLOR_RESET ANSI_COLOR_RED
-                                     "%s\n",
-           i + 1, episode.name);
+    ANIDO_LOGFN(ESCAPE_BOLD ESCAPE_BLUE "%u: " ESCAPE_RESET ESCAPE_RED "%s",
+                i + 1, episode.name);
   }
 
-  printf(PRINT_PREFIX "Select: " ANSI_COLOR_RESET);
+  ANIDO_LOGP("Select: ");
 
   int sel;
   scanf(" %u", &sel);
@@ -217,17 +196,17 @@ void select_episode(const anime *anime, episode **ptr) {
 }
 
 void select_source(const source_list *list, source **ptr) {
-  CLEAR();
-  puts(PRINT_PREFIX "Found sources: " ANSI_COLOR_RESET);
+  CLEAR_LOG();
+  ANIDO_LOGPN("Found sources: ");
 
   for (int i = 0; i < list->len; i++) {
     source source = list->sources[i];
-    printf(ANSI_BOLD ANSI_COLOR_BLUE "%u: " ANSI_COLOR_RESET ANSI_COLOR_RED
-                                     "%s (%s)\n",
-           i + 1, source.name, source.quality);
+    ANIDO_LOGFN(ESCAPE_BOLD ESCAPE_BLUE "%u: " ESCAPE_RESET ESCAPE_RED
+                                        "%s (%s)",
+                i + 1, source.name, source.quality);
   }
 
-  printf(PRINT_PREFIX "Select: " ANSI_COLOR_RESET);
+  ANIDO_LOGP("Select: ");
 
   int sel;
   scanf(" %u", &sel);
@@ -258,7 +237,5 @@ void stream_sources(const source_list *list, const char *file) {
 void download_source(const char *episode_name, const source *ptr) {
   char *file = get_extractor(ptr->extractor)->download(ptr, episode_name);
 
-  printf(PRINT_PREFIX "Anime saved to " ANSI_COLOR_RESET ANSI_COLOR_YELLOW
-                      "%s\n",
-         file);
+  ANIDO_LOGFPN("Anime saved to " ESCAPE_RESET ESCAPE_YELLOW "%s", file);
 }
