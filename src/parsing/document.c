@@ -13,7 +13,7 @@ void fetch_document(const char *contents, document *doc) {
                                 HTML_PARSE_RECOVER | HTML_PARSE_NOERROR |
                                     HTML_PARSE_NOWARNING);
 
-  if (doc == NULL) {
+  if (doc->htmldoc == NULL) {
     fprintf(stderr, "Failed to parse HTML\n");
     return;
   }
@@ -21,19 +21,29 @@ void fetch_document(const char *contents, document *doc) {
   doc->xpath_ctx = xmlXPathNewContext(doc->htmldoc);
 }
 
-void fetch_document_url(const char *url, document *doc,
-                        const char **headers, int headers_size,
-                        const char *post_data) {
+int fetch_document_url(const char *url, document *doc, const char **headers,
+                       int headers_size, const char *post_data) {
   char *response;
 
+  int curlcode;
   if (post_data) {
-    post(url, headers, headers_size, post_data, strlen(post_data), &response);
+    curlcode = post(url, headers, headers_size, post_data, strlen(post_data),
+                    &response);
   } else {
-    fetch(url, headers, headers_size, &response);
+    curlcode = fetch(url, headers, headers_size, &response);
   }
+
+  if (curlcode != 0) {
+    fprintf(stderr,
+            "An error occurred while fetching document. Curl error code: %i\n",
+            curlcode);
+    return 1;
+  }
+
   fetch_document(response, doc);
 
   free(response);
+  return 0;
 }
 
 void exec_xpath(const char *xpath, document *doc,

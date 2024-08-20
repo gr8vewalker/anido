@@ -4,7 +4,7 @@
 #include "../parsing/anime.h"
 
 typedef int (*search_fnc)(const char *, void **);
-typedef void (*populate_fnc)(anime *);
+typedef int (*populate_fnc)(anime *);
 typedef int (*sourcext_fnc)(const episode *, source_list **);
 
 typedef struct {

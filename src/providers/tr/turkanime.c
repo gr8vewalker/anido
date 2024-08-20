@@ -49,7 +49,11 @@ int __search(const char *search_str, void **data_ptr) {
   asprintf(&search_data, "arama=%s", urlencoded);
 
   document doc;
-  fetch_document_url(SEARCH_ENDPOINT, &doc, NULL, 0, search_data);
+  if (fetch_document_url(SEARCH_ENDPOINT, &doc, NULL, 0, search_data) != 0) {
+    free(urlencoded);
+    free(search_data);
+    return -1;
+  }
 
   char *redirecting;
   exec_xpath(
@@ -88,9 +92,10 @@ int __search(const char *search_str, void **data_ptr) {
   return 0;
 }
 
-void __populate(anime *ptr) {
+int __populate(anime *ptr) {
   document doc;
-  fetch_document_url(ptr->link, &doc, NULL, 0, NULL);
+  if (fetch_document_url(ptr->link, &doc, NULL, 0, NULL) != 0)
+    return 1;
 
   exec_xpath("//div[@id='detayPaylas']//div[@class='panel']//"
              "div[@class='panel-ust']//div[@class='panel-title']",
@@ -105,15 +110,19 @@ void __populate(anime *ptr) {
   char *episodes_ajax_url;
   asprintf(&episodes_ajax_url,
            "https://www.turkanime.co/ajax/bolumler?animeId=%s", data_id);
+  free(data_id);
 
   free_document(&doc);
-  fetch_document_url(episodes_ajax_url, &doc, &header, 1, NULL);
+  if (fetch_document_url(episodes_ajax_url, &doc, &header, 1, NULL) != 0) {
+    free(episodes_ajax_url);
+    return 1;
+  }
 
   exec_xpath("//div[@id='bolumler']//li", &doc, xpath_episodes, ptr);
   free_document(&doc);
 
-  free(data_id);
   free(episodes_ajax_url);
+  return 0;
 }
 
 int __sourcext(const episode *episode, source_list **ptr) {
@@ -145,7 +154,8 @@ int __sourcext(const episode *episode, source_list **ptr) {
   for (i = 0; i < fansubs.len; i++) {
     fansub fansub = fansubs.fansubs[i];
     for (j = 0; j < fansub.count; j++) {
-      fetch_document_url(fansub.links[j], &doc, &header, 1, NULL);
+      if (fetch_document_url(fansub.links[j], &doc, &header, 1, NULL) != 0)
+        continue;
 
       char *player_name;
       exec_xpath("//div[@id='videodetay']//div[@class='video-icerik']/"
@@ -220,7 +230,8 @@ int list_fansubs(const episode *episode, fansub_list *ptr) {
   const char *header = "X-Requested-With: XMLHttpRequest";
   document doc;
 
-  fetch_document_url(episode->link, &doc, NULL, 0, NULL);
+  if (fetch_document_url(episode->link, &doc, NULL, 0, NULL) != 0)
+    return -1;
 
   exec_xpath("//div[@id='videodetay']//div[@class='pull-right']//button", &doc,
              xpath_fansubs, ptr);
@@ -230,7 +241,8 @@ int list_fansubs(const episode *episode, fansub_list *ptr) {
   for (int i = 0; i < ptr->len; i++) {
     fansub *fansub = &ptr->fansubs[i];
 
-    fetch_document_url(fansub->links[0], &doc, &header, 1, NULL);
+    if (fetch_document_url(fansub->links[0], &doc, &header, 1, NULL) != 0)
+      continue;
     fansub_list others;
     exec_xpath("//div[@id='videodetay']//div[@class='video-icerik']/"
                "following-sibling::div//button[position()>1]",

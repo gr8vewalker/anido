@@ -34,8 +34,8 @@ static size_t write_file(void *ptr, size_t size, size_t nmemb, void *stream) {
   return written;
 }
 
-void fetch(const char *url, const char **headers, int headers_size,
-           char **response) {
+CURLcode fetch(const char *url, const char **headers, int headers_size,
+               char **response) {
   CURL *curl;
   CURLcode res;
 
@@ -54,6 +54,8 @@ void fetch(const char *url, const char **headers, int headers_size,
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_string);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_holder);
     curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
     res = curl_easy_perform(curl);
 
     curl_slist_free_all(chunk);
@@ -61,10 +63,11 @@ void fetch(const char *url, const char **headers, int headers_size,
   }
 
   *response = response_holder.string;
+  return res;
 }
 
-void post(const char *url, const char **headers, int headers_size,
-          const char *request, size_t request_len, char **response) {
+CURLcode post(const char *url, const char **headers, int headers_size,
+              const char *request, size_t request_len, char **response) {
   CURL *curl;
   CURLcode res;
 
@@ -85,6 +88,8 @@ void post(const char *url, const char **headers, int headers_size,
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_string);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_holder);
     curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
     res = curl_easy_perform(curl);
 
     curl_slist_free_all(chunk);
@@ -92,6 +97,7 @@ void post(const char *url, const char **headers, int headers_size,
   }
 
   *response = response_holder.string;
+  return res;
 }
 
 downloader_session *create_download_session(int max_handles) {
@@ -114,6 +120,7 @@ void add_to_session(downloader_session *session, const char *url,
   session->handle_count++;
 }
 
+// TODO: Add a way to handle errors, at least print them.
 void perform_session(downloader_session *session) {
   session->multi_handle = curl_multi_init();
   for (int i = 0; i < session->handle_count; i++)

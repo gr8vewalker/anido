@@ -10,9 +10,9 @@ typedef struct {
   FILE **files;
 } downloader_session;
 
-void fetch(const char *url, const char **headers, int headers_size,
+CURLcode fetch(const char *url, const char **headers, int headers_size,
            char **response);
-void post(const char *url, const char **headers, int headers_size,
+CURLcode post(const char *url, const char **headers, int headers_size,
           const char *request, size_t request_len, char **response);
 downloader_session *create_download_session(int max_handles);
 void add_to_session(downloader_session *session, const char *url,
