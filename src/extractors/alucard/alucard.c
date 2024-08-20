@@ -46,7 +46,7 @@ source_list *__extract(const char *link, const char *source_name) {
 
   source_list *sources = malloc(sizeof(source_list));
   sources->len = 0;
-  sources->sources = malloc(0);
+  sources->sources = malloc(sizeof(source));
 
   int was_match = 0;
   while (line != NULL) {

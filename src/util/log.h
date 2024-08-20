@@ -38,8 +38,8 @@
 #define ANIDO_LOG_DEBUG(log) puts(ANIDO_DEBUG_PREFIX log ESCAPE_RESET);
 #define ANIDO_LOGF_DEBUG(fmt, ...) printf(ANIDO_DEBUG_PREFIX fmt ESCAPE_RESET "\n", __VA_ARGS__);
 #else
-#define ANIDO_LOG_DEBUG(log) 0
-#define ANIDO_LOGF_DEBUG(fmt, ...) 0
+#define ANIDO_LOG_DEBUG(log) (void)0
+#define ANIDO_LOGF_DEBUG(fmt, ...) (void)0
 #endif
 
 #endif

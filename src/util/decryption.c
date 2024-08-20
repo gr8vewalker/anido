@@ -1,6 +1,5 @@
 #include "decryption.h"
 
-#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +27,7 @@ size_t calc_decode_len(const char *b64input) {
 int base64_decode(char *b64message, unsigned char **buffer, size_t *length) {
   BIO *bio, *b64;
 
-  int decodeLen = calc_decode_len(b64message);
+  size_t decodeLen = calc_decode_len(b64message);
   *buffer = (unsigned char *)malloc(decodeLen + 1);
   (*buffer)[decodeLen] = '\0';
 
@@ -38,7 +37,10 @@ int base64_decode(char *b64message, unsigned char **buffer, size_t *length) {
 
   BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
   *length = BIO_read(bio, *buffer, strlen(b64message));
-  assert(*length == decodeLen);
+  if (*length != decodeLen) {
+    ANIDO_ERRN("Base64 decoded length doesnt match");
+    return -1;
+  }
   BIO_free_all(bio);
 
   return 0;
@@ -120,7 +122,8 @@ int key_and_iv(char *salttext, unsigned char *key, unsigned char *iv,
 unsigned char *decryptAES(char *ciphertext, char *salttext, char *password) {
   unsigned char *ciphertext_decoded;
   size_t ciphertext_len;
-  base64_decode(ciphertext, &ciphertext_decoded, &ciphertext_len);
+  if (base64_decode(ciphertext, &ciphertext_decoded, &ciphertext_len) != 0)
+    return NULL;
 
   unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
   if (!key_and_iv(salttext, key, iv, password)) {

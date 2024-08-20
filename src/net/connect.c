@@ -64,6 +64,8 @@ CURLcode fetch(const char *url, const char **headers, int headers_size,
 
     curl_slist_free_all(chunk);
     curl_easy_cleanup(curl);
+  } else {
+    return -1;
   }
 
   *response = response_holder.string;
@@ -98,6 +100,8 @@ CURLcode post(const char *url, const char **headers, int headers_size,
 
     curl_slist_free_all(chunk);
     curl_easy_cleanup(curl);
+  } else {
+    return -1;
   }
 
   *response = response_holder.string;

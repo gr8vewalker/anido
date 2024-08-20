@@ -17,6 +17,7 @@ project "anido"
    kind "ConsoleApp"
    language "C"
    targetdir "bin/%{cfg.buildcfg}"
+   warnings "Extra"
 
    files { "src/**.h", "src/**.c" }
    links { "curl", "xml2", "ssl", "crypto" }

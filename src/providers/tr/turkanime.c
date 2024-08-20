@@ -138,7 +138,7 @@ int __sourcext(const episode *episode, source_list **ptr) {
   }
 
   list->len = 0;
-  list->sources = malloc(0);
+  list->sources = malloc(sizeof(source));
 
   if (!list->sources) {
     ANIDO_ERRN("Cannot allocate memory for sources ptr");
@@ -403,7 +403,8 @@ void xpath_decrypt_embed(void *ptr, xmlNodeSetPtr nodeset) {
 
     unsigned char *cipher_json;
     size_t cipher_json_len;
-    base64_decode(encoded_section, &cipher_json, &cipher_json_len);
+    if (base64_decode(encoded_section, &cipher_json, &cipher_json_len) != 0)
+      return;
 
     cJSON *json = cJSON_ParseWithLength((char *)cipher_json, cipher_json_len);
     char *ciphertext = cJSON_GetObjectItem(json, "ct")->valuestring;
