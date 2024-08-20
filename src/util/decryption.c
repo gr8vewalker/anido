@@ -1,14 +1,8 @@
+#include "anidopch.h"
 #include "decryption.h"
-
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <openssl/bio.h>
 #include <openssl/evp.h>
-
-#include "util/log.h"
 
 // BASE 64 DECODING.
 // Taken from https://gist.github.com/barrysteyn/7308212

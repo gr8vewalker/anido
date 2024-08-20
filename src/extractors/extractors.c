@@ -1,10 +1,5 @@
+#include "anidopch.h"
 #include "extractors.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "util/log.h"
 
 #define EXTRACTOR_COUNT 1
 #define EXTRACTOR_ALUCARD "ALUCARD(BETA)"

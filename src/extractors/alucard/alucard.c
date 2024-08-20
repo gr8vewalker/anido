@@ -1,13 +1,9 @@
+#include "anidopch.h"
 #include "alucard.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "cjson/cJSON.h"
 #include "net/connect.h"
 #include "opt/opts.h"
-#include "util/log.h"
 #include "util/video.h"
 
 source_list *__extract(const char *link, const char *source_name) {

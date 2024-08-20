@@ -1,9 +1,5 @@
+#include "anidopch.h"
 #include "providers.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "util/log.h"
 
 // providers list
 #define PROVIDER_COUNT 1

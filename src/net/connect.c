@@ -1,13 +1,8 @@
+#include "anidopch.h"
 #include "connect.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <curl/curl.h>
 #include <curl/easy.h>
-
-#include "util/log.h"
 
 typedef struct {
   char *string;

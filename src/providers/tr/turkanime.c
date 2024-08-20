@@ -1,8 +1,5 @@
+#include "anidopch.h"
 #include "turkanime.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "cjson/cJSON.h"
 
@@ -11,7 +8,6 @@
 #include "parsing/anime.h"
 #include "parsing/document.h"
 #include "util/decryption.h"
-#include "util/log.h"
 
 #define BASE_URL "https://www.turkanime.co"
 #define ANIME_ENDPOINT "https://www.turkanime.co/anime"

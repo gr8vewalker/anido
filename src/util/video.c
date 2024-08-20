@@ -1,8 +1,5 @@
+#include "anidopch.h"
 #include "video.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 void ffmpeg_concat(const char *concat_file, const char *merged_video) {
   char *str = "";

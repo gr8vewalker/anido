@@ -1,9 +1,8 @@
+#include "anidopch.h"
 #include "file.h"
 
-#define _XOPEN_SOURCE 500
 #include <ftw.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 int rmfn(const char *fpath, const struct stat *sb, int typeflag,
          struct FTW *ftwbuf) {

@@ -1,9 +1,7 @@
+#include "anidopch.h"
 #include "opts.h"
 
 #include <getopt.h>
-#include <stdlib.h>
-
-#include "util/log.h"
 #include "version.h"
 
 int STREAM_FLAG = 0;

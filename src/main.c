@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include "anidopch.h"
 
 #include <curl/curl.h>
 
@@ -10,7 +7,6 @@
 #include "parsing/anime.h"
 #include "providers/providers.h"
 #include "util/file.h"
-#include "util/log.h"
 #include "util/video.h"
 
 void select_provider();

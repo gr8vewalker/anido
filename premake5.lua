@@ -19,6 +19,9 @@ project "anido"
    targetdir "bin/%{cfg.buildcfg}"
    warnings "Extra"
 
+   pchheader "src/anidopch.h"
+   pchheader "src/anidopch.c"
+
    files { "src/**.h", "src/**.c" }
    links { "curl", "xml2", "ssl", "crypto" }
    includedirs { "/usr/include/libxml2", "./src" }

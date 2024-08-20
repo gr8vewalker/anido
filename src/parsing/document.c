@@ -1,13 +1,9 @@
+#include "anidopch.h"
 #include "document.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "libxml/xpath.h"
+#include <libxml/xpath.h>
 
 #include "net/connect.h"
-#include "util/log.h"
 
 void fetch_document(const char *contents, document *doc) {
   doc->htmldoc = htmlReadMemory(contents, strlen(contents), NULL, NULL,

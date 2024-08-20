@@ -1,8 +1,8 @@
 #ifndef ANIMEDOWN_DOCUMENT_H
 #define ANIMEDOWN_DOCUMENT_H
 
-#include "libxml/HTMLparser.h"
-#include "libxml/xpath.h"
+#include <libxml/HTMLparser.h>
+#include <libxml/xpath.h>
 
 typedef struct {
   htmlDocPtr htmldoc;
