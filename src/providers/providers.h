@@ -1,7 +1,7 @@
 #ifndef ANIMEDOWN_PROVIDERS_H
 #define ANIMEDOWN_PROVIDERS_H
 
-#include "../parsing/anime.h"
+#include "parsing/anime.h"
 
 typedef int (*search_fnc)(const char *, void **);
 typedef int (*populate_fnc)(anime *);

@@ -20,7 +20,7 @@ project "anido"
 
    files { "src/**.h", "src/**.c" }
    links { "curl", "xml2", "ssl", "crypto" }
-   includedirs { "/usr/include/libxml2" }
+   includedirs { "/usr/include/libxml2", "./src" }
 
    filter "configurations:debug"
       defines { "DEBUG" }

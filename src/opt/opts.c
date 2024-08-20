@@ -1,8 +1,10 @@
 #include "opts.h"
-#include "../util/log.h"
-#include "../version.h"
+
 #include <getopt.h>
 #include <stdlib.h>
+
+#include "util/log.h"
+#include "version.h"
 
 int STREAM_FLAG = 0;
 int MAX_CURL_HANDLES = 10;

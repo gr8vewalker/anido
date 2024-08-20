@@ -1,7 +1,7 @@
 #ifndef ANIMEDOWN_EXTRACTORS_H
 #define ANIMEDOWN_EXTRACTORS_H
 
-#include "../parsing/anime.h"
+#include "parsing/anime.h"
 
 typedef source_list *(*extract_fnc)(const char*, const char*);
 typedef char *(*stream_fnc)(const source*);

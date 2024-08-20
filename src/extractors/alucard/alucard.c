@@ -1,12 +1,14 @@
 #include "alucard.h"
-#include "../../cjson/cJSON.h"
-#include "../../net/connect.h"
-#include "../../opt/opts.h"
-#include "../../util/video.h"
-#include "../../util/log.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "cjson/cJSON.h"
+#include "net/connect.h"
+#include "opt/opts.h"
+#include "util/log.h"
+#include "util/video.h"
 
 source_list *__extract(const char *link, const char *source_name) {
   char *sources_link;
@@ -113,7 +115,10 @@ char *__download(const source *source, const char *name) {
       fprintf(concatfile, "file '%u.mp4'\n", index);
       add_to_session(session, line, filename);
       if (session->handle_count == MAX_CURL_HANDLES) {
-        ANIDO_LOGFN(ESCAPE_RED "[Alucard] " ESCAPE_RESET "Downloading parts... " ESCAPE_YELLOW "[%u]" ESCAPE_RESET, x);
+        ANIDO_LOGFN(ESCAPE_RED "[Alucard] " ESCAPE_RESET
+                               "Downloading parts... " ESCAPE_YELLOW
+                               "[%u]" ESCAPE_RESET,
+                    x);
         perform_session(session);
       }
     } else if (strncmp(line, prefix, prefix_len) == 0) {

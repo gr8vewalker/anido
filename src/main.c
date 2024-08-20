@@ -1,16 +1,17 @@
-#include "extractors/extractors.h"
-#include "opt/opts.h"
-#include "parsing/anime.h"
-#include "util/file.h"
-#include "util/log.h"
-#include "util/video.h"
-#include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include <curl/curl.h>
+
+#include "extractors/extractors.h"
+#include "opt/opts.h"
+#include "parsing/anime.h"
 #include "providers/providers.h"
+#include "util/file.h"
+#include "util/log.h"
+#include "util/video.h"
 
 void select_provider();
 char *search_input();
@@ -30,10 +31,12 @@ int main(int argc, char **argv) {
 
   // TODO: make this $TMPDIR/animetmp default and changeable from options
   if (remove_dir("animetmp") != 0)
-    ANIDO_LOGN(ESCAPE_YELLOW "warn: temp directory may not be fully cleared" ESCAPE_RESET);
+    ANIDO_LOGN(ESCAPE_YELLOW
+               "warn: temp directory may not be fully cleared" ESCAPE_RESET);
 
   if (create_dir("animetmp") != 0)
-    ANIDO_LOGN(ESCAPE_YELLOW "warn: temp directory may not be created" ESCAPE_RESET);
+    ANIDO_LOGN(ESCAPE_YELLOW
+               "warn: temp directory may not be created" ESCAPE_RESET);
 
   curl_global_init(CURL_GLOBAL_ALL);
 

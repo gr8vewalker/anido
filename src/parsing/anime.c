@@ -1,4 +1,5 @@
 #include "anime.h"
+
 #include <stdlib.h>
 
 void parser_free_episode(episode *ptr) {
