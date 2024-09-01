@@ -17,6 +17,8 @@ int input_number(long *number);
 int main(int argc, char **argv) {
     int retval = 0;
     animProvider *provider = NULL;
+    size_t found = 0;
+    animEntry *animes = NULL;
     animEntry *anime = NULL;
     animPart *episode = NULL;
     animSource *source = NULL;
@@ -72,8 +74,6 @@ int main(int argc, char **argv) {
 
     PRINT(TEXT_COLOR "Searching " PROGRAM_COLOR "%s\n", SEARCH);
 
-    size_t found = 0;
-    animEntry *animes;
     if (anim_search(provider, SEARCH, &found, &animes) != 0) {
         log_error("Search failed! Search string was %s", SEARCH);
         retval = 1;
@@ -136,6 +136,7 @@ int main(int argc, char **argv) {
     }
 
 end:
+    anim_free_entries(animes, found);
     anim_cleanup();
     free(SEARCH);
     free(PROVIDER);

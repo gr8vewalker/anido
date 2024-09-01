@@ -82,4 +82,11 @@ int anim_sources(animProvider *provider, animPart *part);
 int anim_download(animSource *source, const char *path, const char *tmp);
 int anim_stream(animSource *source, char **result, const char *tmp);
 
+// Freeing
+
+// anim_free_entries can be used to recursively free all of the entries.
+void anim_free_entries(animEntry *entries, size_t size);
+void anim_free_parts(animPart *parts, size_t size);
+void anim_free_sources(animSource *sources, size_t size);
+
 #endif

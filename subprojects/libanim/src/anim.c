@@ -4,6 +4,7 @@
 #include "src/providers/provider.h"
 #include "src/providers/tr/turkanime/turkanime.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -134,4 +135,30 @@ int anim_stream(animSource *source, char **result, const char *tmp) {
     if (source->extractor->stream(source, result, tmp) != 0)
         return -1;
     return 0;
+}
+
+void anim_free_entries(animEntry *entries, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        free(entries[i].name);
+        free(entries[i].link);
+        anim_free_parts(entries[i].parts, entries[i].parts_size);
+    }
+    free(entries);
+}
+
+void anim_free_parts(animPart *parts, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        free(parts[i].name);
+        free(parts[i].link);
+        anim_free_sources(parts[i].sources, parts[i].sources_size);
+    }
+    free(parts);
+}
+
+void anim_free_sources(animSource *sources, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        free(sources[i].name);
+        free(sources[i].link);
+    }
+    free(sources);
 }

@@ -133,12 +133,14 @@ int tr_turkanime_details(animEntry *entry) {
     char *name = xpath_s("//div[@id='detayPaylas']//div[@class='panel']//"
                          "div[@class='panel-ust']//div[@class='panel-title']/.",
                          &document);
+    free(entry->name); 
     entry->name = name;
 
     char *anime_id = xpath_s(
         "//div[@id='animedetay']//div[@class='oylama']/@data-id", &document);
     char *episodes_url =
         format_string(TURKANIME_EPISODES_ENDPOINT_FORMAT, anime_id);
+    free(anime_id);
 
     const char *header = "X-Requested-With: XMLHttpRequest";
 
@@ -147,6 +149,9 @@ int tr_turkanime_details(animEntry *entry) {
     if (get(episodes_url, &header, 1, &body) != 0 ||
         load_document(body, &document) != 0)
         return -1;
+
+    free(body);
+    free(episodes_url);
 
     xmlXPathObjectPtr result = xpath("//div[@id='bolumler']//li", &document);
 
