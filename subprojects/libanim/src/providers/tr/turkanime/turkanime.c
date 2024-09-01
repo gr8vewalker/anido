@@ -51,24 +51,24 @@ static int tr_turkanime_search(const char *input, size_t *size,
         return 0;
     }
 
+    int retval = 0;
+    char *encoded = NULL, *search_data = NULL, *body = NULL;
+    xmlXPathObjectPtr result = NULL;
     animDocument document;
 
-    char *encoded;
-    if (urlenc(input, &encoded) != 0)
-        return -1;
+    if (urlenc(input, &encoded) != 0) {
+        retval = -1;
+        goto end;
+    }
 
-    char *search_data = format_string("arama=%s", encoded);
-
-    char *body;
+    search_data = format_string("arama=%s", encoded);
 
     if (post(TURKANIME_SEARCH_ENDPOINT, NULL, 0, search_data,
              strlen(search_data), &body) != 0 ||
-        load_document(body, &document) != 0)
-        return -1;
-
-    free(encoded);
-    free(search_data);
-    free(body);
+        load_document(body, &document) != 0) {
+        retval = -1;
+        goto end;
+    }
 
     char *redirect_location = xpath_s(
         "concat('" TURKANIME_BASE "/', "
@@ -82,25 +82,28 @@ static int tr_turkanime_search(const char *input, size_t *size,
                 strlen(TURKANIME_ANIME_ENDPOINT)) == 0) {
         *entries = malloc(sizeof(animEntry));
 
-        if (!(*entries))
-            return -1;
+        if (!(*entries)) {
+            retval = -1;
+            goto end;
+        }
 
         *size = 1;
         (*entries)->name = format_string("Redirected to %s", redirect_location);
         (*entries)->link = redirect_location;
-        unload_document(&document);
-        return 0;
+        goto end;
     }
 
-    xmlXPathObjectPtr result = xpath("//div[@class='col-md-6 col-sm-6 "
-                                     "col-xs-12']//a[@class='baloon']",
-                                     &document);
+    result = xpath("//div[@class='col-md-6 col-sm-6 "
+                   "col-xs-12']//a[@class='baloon']",
+                   &document);
     xmlNodeSetPtr buttons = result->nodesetval;
     size_t count = buttons->nodeNr;
 
     *entries = calloc(count, sizeof(animEntry));
-    if (!(*entries))
-        return -1;
+    if (!(*entries)) {
+        retval = -1;
+        goto end;
+    }
 
     *size = count;
     for (size_t i = 0; i < count; ++i) {
@@ -111,9 +114,13 @@ static int tr_turkanime_search(const char *input, size_t *size,
             xpath_ns("concat('https: ', @href)", node, &document);
     }
 
+end:
+    free(encoded);
+    free(search_data);
+    free(body);
     xmlXPathFreeObject(result);
     unload_document(&document);
-    return 0;
+    return retval;
 }
 
 int tr_turkanime_details(animEntry *entry) {
@@ -121,47 +128,49 @@ int tr_turkanime_details(animEntry *entry) {
                 TURKANIME_ANIME_ENDPOINT_LEN) != 0)
         return -1;
 
+    int retval = 0;
+    char *body = NULL, *anime_id = NULL, *episodes_url = NULL;
+    xmlXPathObjectPtr result = NULL;
     animDocument document;
 
-    char *body;
     if (get(entry->link, NULL, 0, &body) != 0 ||
-        load_document(body, &document) != 0)
-        return -1;
-
+        load_document(body, &document) != 0) {
+        retval = -1;
+        goto end;
+    }
     free(body);
 
-    char *name = xpath_s("//div[@id='detayPaylas']//div[@class='panel']//"
-                         "div[@class='panel-ust']//div[@class='panel-title']/.",
-                         &document);
-    free(entry->name); 
-    entry->name = name;
+    free(entry->name); // Remove old allocated name from search
+    entry->name =
+        xpath_s("//div[@id='detayPaylas']//div[@class='panel']//"
+                "div[@class='panel-ust']//div[@class='panel-title']/.",
+                &document);
 
-    char *anime_id = xpath_s(
-        "//div[@id='animedetay']//div[@class='oylama']/@data-id", &document);
-    char *episodes_url =
-        format_string(TURKANIME_EPISODES_ENDPOINT_FORMAT, anime_id);
-    free(anime_id);
+    anime_id = xpath_s("//div[@id='animedetay']//div[@class='oylama']/@data-id",
+                       &document);
+    episodes_url = format_string(TURKANIME_EPISODES_ENDPOINT_FORMAT, anime_id);
 
     const char *header = "X-Requested-With: XMLHttpRequest";
 
     unload_document(&document);
 
     if (get(episodes_url, &header, 1, &body) != 0 ||
-        load_document(body, &document) != 0)
-        return -1;
+        load_document(body, &document) != 0) {
+        retval = -1;
+        goto end;
+    }
 
-    free(body);
-    free(episodes_url);
-
-    xmlXPathObjectPtr result = xpath("//div[@id='bolumler']//li", &document);
+    result = xpath("//div[@id='bolumler']//li", &document);
 
     xmlNodeSetPtr episodes = result->nodesetval;
     size_t count = episodes->nodeNr;
 
     entry->parts = calloc(count, sizeof(animPart));
 
-    if (!entry->parts)
-        return -1;
+    if (!entry->parts) {
+        retval = -1;
+        goto end;
+    }
 
     entry->parts_size = count;
 
@@ -174,9 +183,13 @@ int tr_turkanime_details(animEntry *entry) {
             xpath_ns("concat('https:', ./a[2]/@href)", node, &document);
     }
 
+end:
+    free(body);
+    free(anime_id);
+    free(episodes_url);
     xmlXPathFreeObject(result);
     unload_document(&document);
-    return 0;
+    return retval;
 }
 
 int tr_turkanime_host_sources(animPart *part, const char *encrypted,
