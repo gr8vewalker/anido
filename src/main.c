@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
         int success = -1;
         long in = 0;
         do {
-            PRINT(TEXT_COLOR "Select an episode: " USER_COLOR);
+            PRINT(TEXT_COLOR "Select an anime: " USER_COLOR);
         } while ((success = input_number(&in)) || in < 1 ||
                  in > found);
         anime = &animes[in - 1];
