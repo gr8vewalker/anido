@@ -225,6 +225,7 @@ int tr_turkanime_host_sources(animPart *part, const char *encrypted,
 
     free(name);
     free(url);
+    free(crypt_info);
     cJSON_Delete(json);
     return 0;
 }
@@ -296,7 +297,7 @@ int tr_turkanime_fansub_sources(animPart *part, const animDocument *document,
         unload_document(&host_document);
     }
 
-    free(result);
+    xmlXPathFreeObject(result);
     return 0;
 }
 
@@ -358,6 +359,7 @@ int tr_turkanime_sources(animPart *part) {
         retval = 0;
     }
 
+    unload_document(&document);
     return retval;
 }
 
