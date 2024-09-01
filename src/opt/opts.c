@@ -12,7 +12,7 @@ char *PLAYER = "mpv";
 
 char *PROVIDER = NULL;
 char *SEARCH = NULL;
-int EPISODE = -1;
+long EPISODE = -1;
 char *SOURCE = NULL;
 char *QUALITY = NULL;
 

@@ -7,7 +7,7 @@ extern char *DOWNLOAD_FILE;
 
 extern char *PROVIDER;
 extern char *SEARCH;
-extern int EPISODE;
+extern long EPISODE;
 extern char *SOURCE;
 extern char *QUALITY;
 

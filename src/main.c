@@ -22,11 +22,11 @@ int main(int argc, char **argv) {
     animSource *source = NULL;
     size_t i;
 
-    // ------------ INIT ------------ 
+    // ------------ INIT ------------
     anim_initialize();
     parse_opts(argc, argv);
 
-    // ------------ PROVIDER ------------ 
+    // ------------ PROVIDER ------------
     if (!PROVIDER) {
         size_t providers_size;
         animProvider *providers = anim_list_providers(&providers_size);
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     PRINT(TEXT_COLOR "Selected provider: " PROGRAM_COLOR "%s\n",
           provider->name);
 
-    // ------------ SEARCH ------------ 
+    // ------------ SEARCH ------------
     int cli_search = SEARCH != NULL;
     if (!SEARCH) {
         PRINT(TEXT_COLOR "What do you want to search: " USER_COLOR);
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
             retval = 1;
             goto end;
         }
-        // remove trailing newline 
+        // remove trailing newline
         SEARCH[strcspn(SEARCH, "\r\n")] = 0;
     }
 
@@ -99,13 +99,41 @@ int main(int argc, char **argv) {
         long in = 0;
         do {
             PRINT(TEXT_COLOR "Select an anime: " USER_COLOR);
-        } while ((success = input_number(&in)) || in < 1 ||
-                 in > found);
+        } while ((success = input_number(&in)) || in < 1 || in > found);
         anime = &animes[in - 1];
     } else {
         anime = animes;
     }
 
+    // ------------ EPISODES ------------
+    PRINT(TEXT_COLOR "Getting details for: " PROGRAM_COLOR "%s\n", anime->name);
+    if (anim_details(provider, anime) != 0) {
+        log_error("Details failed! Anime link was %s", anime->link);
+        retval = 1;
+        goto end;
+    }
+
+    if (anime->parts_size < 1) {
+        if (EPISODE > -1) {
+            log_error("No episodes found for this anime.");
+            retval = 1;
+            goto end;
+        } else {
+            PRINT(ERROR_COLOR "No episodes found!\n");
+            goto end; // TODO: get back to search
+        }
+    }
+
+    if (EPISODE == -1) {
+        PRINT(TEXT_COLOR "Episodes: \n");
+        for (i = 0; i < anime->parts_size; ++i) {
+            PRINT(PROGRAM_COLOR "%zu - %s\n", i + 1, anime->parts[i].name);
+        }
+        int success = -1;
+        do {
+            PRINT(TEXT_COLOR "Select an episode: " USER_COLOR);
+        } while ((success = input_number(&EPISODE)) || EPISODE < 1 || EPISODE > anime->parts_size);
+    }
 
 end:
     anim_cleanup();
