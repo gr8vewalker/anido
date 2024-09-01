@@ -70,7 +70,7 @@ int anim_initialize();
 void anim_cleanup();
 
 animProvider *anim_list_providers(size_t *size);
-animProvider *anim_get_provider(int id);
+animProvider *anim_get_provider(char *name, int exact);
 animFilter *anim_get_filters(animProvider *provider,
                                             size_t *size);
 

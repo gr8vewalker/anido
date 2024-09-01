@@ -5,6 +5,7 @@
 #include "src/providers/tr/turkanime/turkanime.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 static int INITIALIZED = 0;
 
@@ -54,14 +55,17 @@ animProvider *anim_list_providers(size_t *size) {
     return (animProvider *)PROVIDERS;
 }
 
-animProvider *anim_get_provider(int id) {
+animProvider *anim_get_provider(char *name, int exact) {
     if (!INITIALIZED)
         return NULL;
 
     for (size_t i = 0; i < PROVIDER_COUNT; i++) {
-        animProvider *ptr = (animProvider *)&PROVIDERS[i];
-        if (ptr->id == id)
-            return ptr;
+        char *comparing = PROVIDERS[i].name;
+        size_t comparing_len = strlen(exact ? comparing : name);
+
+        if (strncmp(name, comparing, comparing_len) == 0) {
+            return (animProvider *)&PROVIDERS[i];
+        }
     }
 
     return NULL;
@@ -131,4 +135,3 @@ int anim_stream(animSource *source, char **result, const char *tmp) {
         return -1;
     return 0;
 }
-

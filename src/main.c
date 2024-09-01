@@ -23,10 +23,9 @@ int main(int argc, char **argv) {
     anim_initialize();
     parse_opts(argc, argv);
 
-    size_t providers_size;
-    animProvider *providers = anim_list_providers(&providers_size);
-
     if (!PROVIDER) {
+        size_t providers_size;
+        animProvider *providers = anim_list_providers(&providers_size);
         PRINT(TEXT_COLOR "Available providers:\n");
         for (i = 0; i < providers_size; ++i) {
             PRINT(PROGRAM_COLOR "%zu - %s\n", i + 1, providers[i].name);
@@ -40,12 +39,7 @@ int main(int argc, char **argv) {
                  in > providers_size);
         provider = &providers[in - 1];
     } else {
-        for (i = 0; i < providers_size; ++i) {
-            if (strncmp(PROVIDER, providers[i].name, strlen(PROVIDER)) != 0)
-                continue;
-            provider = &providers[i];
-            break;
-        }
+        provider = anim_get_provider(PROVIDER, 0);
     }
 
     if (!provider) {
@@ -55,7 +49,8 @@ int main(int argc, char **argv) {
         goto end;
     }
 
-    PRINT(TEXT_COLOR "Selected provider: " PROGRAM_COLOR "%s\n", provider->name);
+    PRINT(TEXT_COLOR "Selected provider: " PROGRAM_COLOR "%s\n",
+          provider->name);
 
     if (!SEARCH) {
         PRINT(TEXT_COLOR "What do you want to search: " USER_COLOR);
