@@ -46,7 +46,7 @@ static int tr_turkanime_search(const char *input, size_t *size,
             return -1;
 
         *size = 1;
-        (*entries)->name = "";
+        (*entries)->name = format_string("Link: %s", input);
         (*entries)->link = strdup(input);
         return 0;
     }
@@ -83,7 +83,7 @@ static int tr_turkanime_search(const char *input, size_t *size,
             return -1;
 
         *size = 1;
-        (*entries)->name = "";
+        (*entries)->name = format_string("Redirected to %s", redirect_location);
         (*entries)->link = redirect_location;
         unload_document(&document);
         return 0;
