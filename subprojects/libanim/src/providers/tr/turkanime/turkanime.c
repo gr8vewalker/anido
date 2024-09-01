@@ -71,12 +71,15 @@ static int tr_turkanime_search(const char *input, size_t *size,
     free(body);
 
     char *redirect_location = xpath_s(
+        "concat('" TURKANIME_BASE "/', "
         "substring-before(substring-after("
         "//div[@class='panel-body']//script[contains(.,'window.location')]/."
-        ", 'window.location = \"'), '\"')",
+        ", 'window.location = \"'), '\"'))",
         &document);
 
-    if (redirect_location && strncmp("anime/", redirect_location, 6) == 0) {
+    if (redirect_location &&
+        strncmp(TURKANIME_ANIME_ENDPOINT, redirect_location,
+                strlen(TURKANIME_ANIME_ENDPOINT)) == 0) {
         *entries = malloc(sizeof(animEntry));
 
         if (!(*entries))
