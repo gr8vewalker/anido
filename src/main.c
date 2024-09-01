@@ -135,9 +135,46 @@ int main(int argc, char **argv) {
         } while ((success = input_number(&EPISODE)) || EPISODE < 1 || EPISODE > anime->parts_size);
     }
 
+    episode = &anime->parts[EPISODE - 1];
+
+    // ------------ SOURCES ------------
+    PRINT(TEXT_COLOR "Getting sources for: " PROGRAM_COLOR "%s\n", episode->name);
+    if (anim_sources(provider, episode) != 0) {
+        log_error("Sources failed! Episode link was %s", episode->link);
+        retval = 1;
+        goto end;
+    }
+
+    if (!SOURCE) {
+        PRINT(TEXT_COLOR "Sources: \n");
+        for (i = 0; i < episode->sources_size; i++) {
+            PRINT(PROGRAM_COLOR "%zu - %s\n", i + 1, episode->sources[i].name);
+        }
+
+        int success = -1;
+        long in;
+        do {
+            PRINT(TEXT_COLOR "Select a source: " USER_COLOR);
+        } while ((success = input_number(&in)) || in < 1 || in > episode->sources_size);
+        source = &episode->sources[in - 1];
+    } else {
+        for (i = 0; i < episode->sources_size; i++) {
+            if (strstr(episode->sources[i].name, SOURCE)) {
+                source = &episode->sources[i];
+                break;
+            }
+        }
+        if (!source) {
+            log_warn("Source not found! Exiting...");
+            retval = -1;
+            goto end;
+        }
+    }
+
 end:
     anim_free_entries(animes, found);
     anim_cleanup();
+    free(SOURCE);
     free(SEARCH);
     free(PROVIDER);
     return retval;

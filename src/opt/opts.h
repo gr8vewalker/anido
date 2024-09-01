@@ -9,7 +9,6 @@ extern char *PROVIDER;
 extern char *SEARCH;
 extern long EPISODE;
 extern char *SOURCE;
-extern char *QUALITY;
 
 void parse_opts(int argc, char **argv);
 
