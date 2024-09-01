@@ -113,13 +113,13 @@ int alucard_download(const animSource *source, const char *path,
 
     while (line) {
         if (strncmp(https, line, strlen(https)) == 0) {
-            file = format_string("%s/%i.mp4", download_directory, index);
+            file = format_string("%s/%zu.mp4", download_directory, index);
 
             informations[threaded].url = strdup(line);
             informations[threaded].headers = NULL;
             informations[threaded].headers_size = 0;
             informations[threaded].path = strdup(file);
-            fprintf(ffmpeg_concat, "file '%s'\n", file);
+            fprintf(ffmpeg_concat, "file '%zu.mp4'\n", index);
             free(file);
 
             if (pthread_create(&threads[threaded], NULL, downloadfile_t,

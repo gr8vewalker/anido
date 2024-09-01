@@ -9,6 +9,8 @@
 
 int STREAM_FLAG = 0;
 char *PLAYER = "mpv";
+char *DOWNLOAD_FILE = NULL;
+char *TEMP_FOLDER = NULL;
 
 char *PROVIDER = NULL;
 char *SEARCH = NULL;
@@ -22,11 +24,13 @@ static struct option options[] = {{"stream", no_argument, 0, 's'},
                                   {"provider", required_argument, 0, 'r'},
                                   {"search", required_argument, 0, 'c'},
                                   {"episode", required_argument, 0, 'e'},
-                                  {"source", required_argument, 0, 'u'}};
+                                  {"source", required_argument, 0, 'u'},
+                                  {"download", required_argument, 0, 'd'},
+                                  {"temp", required_argument, 0, 't'}};
 
 void parse_opts(int argc, char **argv) {
     int opt;
-    while ((opt = getopt_long(argc, argv, "sp:hvr:c:e:u:q:", options, 0)) !=
+    while ((opt = getopt_long(argc, argv, "sp:hvr:c:e:u:d:t:", options, 0)) !=
            -1) {
         switch (opt) {
         case 's':
@@ -46,6 +50,12 @@ void parse_opts(int argc, char **argv) {
             break;
         case 'u':
             SOURCE = strdup(optarg);
+            break;
+        case 'd':
+            DOWNLOAD_FILE = strdup(optarg);
+            break;
+        case 't':
+            TEMP_FOLDER = strdup(optarg);
             break;
         case 'v':
             log_info("Running anido (%s), built on %s", anido_version(),

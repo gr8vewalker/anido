@@ -4,6 +4,7 @@
 extern int STREAM_FLAG;
 extern char *PLAYER;
 extern char *DOWNLOAD_FILE;
+extern char *TEMP_FOLDER;
 
 extern char *PROVIDER;
 extern char *SEARCH;

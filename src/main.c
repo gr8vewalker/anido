@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define RESET_COLORS "\x1b[0m"
 #define TEXT_COLOR "\x1b[38;2;20;235;201m"
 #define PROGRAM_COLOR "\x1b[38;2;235;201;20m"
 #define USER_COLOR "\x1b[38;2;201;20;235m"
@@ -13,6 +14,7 @@
 #define PRINT(...) printf(__VA_ARGS__)
 
 int input_number(long *number);
+char *tmpdir();
 
 int main(int argc, char **argv) {
     int retval = 0;
@@ -132,13 +134,15 @@ int main(int argc, char **argv) {
         int success = -1;
         do {
             PRINT(TEXT_COLOR "Select an episode: " USER_COLOR);
-        } while ((success = input_number(&EPISODE)) || EPISODE < 1 || EPISODE > anime->parts_size);
+        } while ((success = input_number(&EPISODE)) || EPISODE < 1 ||
+                 EPISODE > anime->parts_size);
     }
 
     episode = &anime->parts[EPISODE - 1];
 
     // ------------ SOURCES ------------
-    PRINT(TEXT_COLOR "Getting sources for: " PROGRAM_COLOR "%s\n", episode->name);
+    PRINT(TEXT_COLOR "Getting sources for: " PROGRAM_COLOR "%s\n",
+          episode->name);
     if (anim_sources(provider, episode) != 0) {
         log_error("Sources failed! Episode link was %s", episode->link);
         retval = 1;
@@ -155,7 +159,8 @@ int main(int argc, char **argv) {
         long in;
         do {
             PRINT(TEXT_COLOR "Select a source: " USER_COLOR);
-        } while ((success = input_number(&in)) || in < 1 || in > episode->sources_size);
+        } while ((success = input_number(&in)) || in < 1 ||
+                 in > episode->sources_size);
         source = &episode->sources[in - 1];
     } else {
         for (i = 0; i < episode->sources_size; i++) {
@@ -171,9 +176,35 @@ int main(int argc, char **argv) {
         }
     }
 
+    // ------------ DOWNLOADING ------------
+    if (!DOWNLOAD_FILE) {
+        PRINT(TEXT_COLOR "Where to save the anime: " USER_COLOR);
+        DOWNLOAD_FILE = calloc(1024, sizeof(char));
+        if (!fgets(DOWNLOAD_FILE, 1024, stdin)) {
+            log_error("fgets failed! ferror: %i", ferror(stdin));
+            retval = 1;
+            goto end;
+        }
+        DOWNLOAD_FILE[strcspn(DOWNLOAD_FILE, "\r\n")] = 0;
+    }
+
+    PRINT(TEXT_COLOR "Downloading " PROGRAM_COLOR "%s (%s) " TEXT_COLOR
+                     "to " PROGRAM_COLOR "%s",
+          episode->name, source->name, DOWNLOAD_FILE);
+
+    PRINT(RESET_COLORS "\n"); // Do not color other outputs like ffmpeg
+    if (anim_download(source, DOWNLOAD_FILE, tmpdir()) != 0) {
+        log_error("Download failed! Was downloading %s to %s. tmp: %s",
+                  source->link, DOWNLOAD_FILE, tmpdir());
+        retval = 1;
+        goto end;
+    }
+    PRINT(TEXT_COLOR "Download finished! File saved to " PROGRAM_COLOR "%s\n", DOWNLOAD_FILE);
+
 end:
     anim_free_entries(animes, found);
     anim_cleanup();
+    free(DOWNLOAD_FILE);
     free(SOURCE);
     free(SEARCH);
     free(PROVIDER);
@@ -198,4 +229,18 @@ int input_number(long *number) {
     }
 
     return 0;
+}
+
+char *tmpdir() {
+    if (TEMP_FOLDER) {
+        return TEMP_FOLDER;
+    }
+
+    char *env[4] = {"TMPDIR", "TMP", "TEMP", "TEMPDIR"};
+    for (size_t i = 0; i < sizeof(env) / sizeof(char *); i++) {
+        char *value = getenv(env[i]);
+        if (value)
+            return value;
+    }
+    return "/tmp";
 }
