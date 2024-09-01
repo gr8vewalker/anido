@@ -6,8 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BRIGHT_YELLOW "\x1b[93m"
-#define BRIGHT_BLUE "\x1b[94m"
+#define TEXT_COLOR "\x1b[38;2;20;235;201m"
+#define PROGRAM_COLOR "\x1b[38;2;235;201;20m"
+#define USER_COLOR "\x1b[38;2;201;20;235m"
 #define PRINT(...) printf(__VA_ARGS__)
 
 int input_number(long *number);
@@ -26,15 +27,15 @@ int main(int argc, char **argv) {
     animProvider *providers = anim_list_providers(&providers_size);
 
     if (!PROVIDER) {
-        PRINT(BRIGHT_BLUE "Available providers:\n");
+        PRINT(TEXT_COLOR "Available providers:\n");
         for (i = 0; i < providers_size; ++i) {
-            PRINT(BRIGHT_YELLOW "%zu - %s\n", i + 1, providers[i].name);
+            PRINT(PROGRAM_COLOR "%zu - %s\n", i + 1, providers[i].name);
         }
 
         int success = -1;
         long in = 0;
         do {
-            PRINT(BRIGHT_BLUE "Select a provider: " BRIGHT_YELLOW);
+            PRINT(TEXT_COLOR "Select a provider: " USER_COLOR);
         } while ((success = input_number(&in)) || in < 1 ||
                  in > providers_size);
         provider = &providers[in - 1];
@@ -54,11 +55,24 @@ int main(int argc, char **argv) {
         goto end;
     }
 
-    PRINT(BRIGHT_BLUE "Selected provider: " BRIGHT_YELLOW "%s\n",
-          provider->name);
+    PRINT(TEXT_COLOR "Selected provider: " PROGRAM_COLOR "%s\n", provider->name);
+
+    if (!SEARCH) {
+        PRINT(TEXT_COLOR "What do you want to search: " USER_COLOR);
+        SEARCH = calloc(1024, sizeof(char));
+        if (!fgets(SEARCH, 1024, stdin)) {
+            log_error("fgets failed! ferror: %i", ferror(stdin));
+            retval = 1;
+            goto end;
+        }
+    }
+
+    PRINT(TEXT_COLOR "Searching " PROGRAM_COLOR "%s\n", SEARCH);
 
 end:
     anim_cleanup();
+    free(SEARCH);
+    free(PROVIDER);
     return retval;
 }
 
