@@ -1,4 +1,4 @@
-#include "util.h"
+#include "libanim/util.h"
 
 unsigned char hex_char(char c) {
     if ('0' <= c && c <= '9')

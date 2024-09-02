@@ -3,11 +3,11 @@
 #include <string.h>
 
 #include "libanim/anim.h"
+#include "libanim/util.h"
 
 #include "src/log/log.h"
 #include "src/opt/opts.h"
 #include "src/util/util.h"
-#include "subprojects/libanim/src/util/util.h"
 
 #define RESET_COLORS "\x1b[0m"
 #define TEXT_COLOR "\x1b[38;2;20;235;201m"

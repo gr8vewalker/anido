@@ -1,4 +1,4 @@
-#include "util.h"
+#include "libanim/util.h"
 #include <stdarg.h>
 
 #define _GNU_SOURCE

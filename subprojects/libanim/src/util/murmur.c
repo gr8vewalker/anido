@@ -1,4 +1,4 @@
-#include "util.h"
+#include "libanim/util.h"
 
 uint64_t murmur64(const char *key) {
     uint64_t h = 525201411107845655ull;
