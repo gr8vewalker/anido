@@ -7,6 +7,7 @@
 #include "src/log/log.h"
 #include "src/opt/opts.h"
 #include "src/util/util.h"
+#include "subprojects/libanim/src/util/util.h"
 
 #define RESET_COLORS "\x1b[0m"
 #define TEXT_COLOR "\x1b[38;2;20;235;201m"
@@ -27,6 +28,7 @@ int _search(size_t *running);
 int _episode(size_t *running);
 int _source(size_t *running);
 int _download(size_t *running);
+int _stream(size_t *running);
 
 int main(int argc, char **argv) {
     int retval = 0;
@@ -34,13 +36,8 @@ int main(int argc, char **argv) {
     anim_initialize();
     parse_opts(argc, argv);
 
-    int (*functions[5])(size_t *) = {
-        _provider,
-        _search,
-        _episode,
-        _source,
-        _download
-    };
+    int (*functions[5])(size_t *) = {_provider, _search, _episode, _source,
+                                     STREAM_FLAG ? _stream : _download};
 
     size_t functions_size = sizeof(functions) / sizeof(void *);
     size_t running = 0;
@@ -124,7 +121,8 @@ int _search(size_t *running) {
 
             free(SEARCH);
             SEARCH = NULL;
-            return 0; // Not editing running so it will run the search function again.
+            return 0; // Not editing running so it will run the search function
+                      // again.
         }
     }
 
@@ -247,6 +245,28 @@ int _download(size_t *running) {
     PRINT(TEXT_COLOR "Download finished! File saved to " PROGRAM_COLOR "%s\n",
           DOWNLOAD_FILE);
 
+    (*running)++;
+    return 0;
+}
+
+int _stream(size_t *running) {
+    PRINT(TEXT_COLOR "Playing " PROGRAM_COLOR "%s (%s) ", episode->name,
+          source->name);
+
+    PRINT(RESET_COLORS "\n"); // Do not color other outputs like mpv/vlc
+    char *result;
+    if (anim_stream(source, &result, tmpdir()) != 0) {
+        log_error("Stream failed! Trying to stream %s. tmp: %s", source->link,
+                  tmpdir());
+        return 1;
+    }
+
+    char *cmd = format_string("%s \"%s\"", PLAYER, result);
+
+    system(cmd);
+
+    free(cmd);
+    free(result);
     (*running)++;
     return 0;
 }
