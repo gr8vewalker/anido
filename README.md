@@ -1,32 +1,30 @@
-# Anime Downloader
+# anido
 
-An anime downloader app written in C. Made exclusively for TurkAnime and it's player Alucard. (Multi-site and other sources support coming soon!)
+An anime downloader app written in C. 
+It depends on `libanim`, a web scraping anime utility library.
 
-No official Windows support yet!
+`libanim` is still on this repo but when it gets polished enough it will be seperated.
 
 # Building 
 
-Use `./scripts/build.sh` or `./scripts/build.sh release` for release builds.
+This project uses Meson. So, this should be enough:
+```sh
+meson setup builddir
+meson compile -C builddir
+```
 
-# Usage
+You need required dependencies (maybe their development packages too) to build.
 
-### Dependencies
+# Dependencies
 
-Required: 
+Required: `libxml2`, `curl`, `openssl`
 
-- `libxml2` : Web scraping.
-- `curl` : Getting websites and downloading.
-- `openssl` : Base64 decode and AES decryption.
+Optional (in PATH):
 
-Optional: (these libraries/utilities should be in PATH)
+- `ffmpeg` : Video utilities for some sources.
+- `mpv`/`vlc` etc. : Playback.
 
-- `ffmpeg` : Some sources needs concatenating videos etc.
-- `mpv`/`vlc` : Playing the video in stream mode. (Default: mpv)
-
-### Running
-
-```anido [-s,--stream] [-p,--player player] [-m,--max-handles 'max curl handles']```
+# Running
 
 Run the executable on your favorite terminal.
 
-If you can't see the symbols, use a font that supports them.

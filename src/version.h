@@ -1,16 +1,7 @@
-#ifndef ANIMEDOWN_VERSION_H
-#define ANIMEDOWN_VERSION_H
+#ifndef ANIDO_VERSION_H 
+#define ANIDO_VERSION_H 
 
-const char *anido_version() {
-#ifdef ANIDO_VERSION
-  return ANIDO_VERSION;
-#else
-  return "source";
-#endif
-}
-
-const char *build_date() {
-    return __DATE__ " " __TIME__;
-}
+const char *anido_version();
+const char *anido_build_date();
 
 #endif
