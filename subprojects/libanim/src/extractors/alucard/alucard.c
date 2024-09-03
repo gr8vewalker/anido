@@ -1,9 +1,9 @@
 #include "alucard.h"
 #include "libanim/anim.h"
 #include "libanim/net.h"
+#include "libanim/util.h"
 #include "src/cjson/cJSON.h"
 #include "src/extractors/extractor.h"
-#include "src/util/util.h"
 #include <errno.h>
 #include <pthread.h>
 #include <stdio.h>

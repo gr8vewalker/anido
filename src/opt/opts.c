@@ -8,6 +8,7 @@
 #include <string.h>
 
 int STREAM_FLAG = 0;
+int QUERY_FLAG = 0;
 char *PLAYER = "mpv";
 char *DOWNLOAD_FILE = NULL;
 char *TEMP_FOLDER = NULL;
@@ -26,15 +27,19 @@ static struct option options[] = {{"stream", no_argument, 0, 's'},
                                   {"episode", required_argument, 0, 'e'},
                                   {"source", required_argument, 0, 'u'},
                                   {"download", required_argument, 0, 'd'},
-                                  {"temp", required_argument, 0, 't'}};
+                                  {"temp", required_argument, 0, 't'},
+                                  {"query", no_argument, 0, 'q'}};
 
 void parse_opts(int argc, char **argv) {
     int opt;
-    while ((opt = getopt_long(argc, argv, "sp:hvr:c:e:u:d:t:", options, 0)) !=
+    while ((opt = getopt_long(argc, argv, "sp:hvr:c:e:u:d:t:q", options, 0)) !=
            -1) {
         switch (opt) {
         case 's':
             STREAM_FLAG = 1;
+            break;
+        case 'q':
+            QUERY_FLAG = 1;
             break;
         case 'p':
             PLAYER = strdup(optarg);

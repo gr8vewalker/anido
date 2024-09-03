@@ -7,13 +7,13 @@
 #include "libanim/anim.h"
 #include "libanim/html.h"
 #include "libanim/net.h"
+#include "libanim/util.h"
 #include "libxml/parser.h"
 #include "libxml/xpath.h"
 #include "src/cjson/cJSON.h"
 #include "src/extractors/alucard/alucard.h"
 #include "src/extractors/extractor.h"
 #include "src/providers/provider.h"
-#include "src/util/util.h"
 
 #define TURKANIME_BASE "https://www.turkanime.co"
 #define TURKANIME_ANIME_ENDPOINT "https://www.turkanime.co/anime"
@@ -111,7 +111,7 @@ static int tr_turkanime_search(const char *input, size_t *size,
         (*entries)[i].name =
             xpath_ns("substring-before(@title, ' izle')", node, &document);
         (*entries)[i].link =
-            xpath_ns("concat('https: ', @href)", node, &document);
+            xpath_ns("concat('https:', @href)", node, &document);
     }
 
 end:

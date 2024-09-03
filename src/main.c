@@ -14,7 +14,9 @@
 #define PROGRAM_COLOR "\x1b[38;2;235;201;20m"
 #define USER_COLOR "\x1b[38;2;201;20;235m"
 #define ERROR_COLOR "\x1b[38;2;234;21;66m"
-#define PRINT(...) printf(__VA_ARGS__)
+#define PRINT(...)                                                             \
+    if (!QUERY_FLAG)                                                           \
+    printf(__VA_ARGS__)
 
 static animProvider *provider = NULL;
 static size_t found = 0;
@@ -29,6 +31,8 @@ int _episode(size_t *running);
 int _source(size_t *running);
 int _download(size_t *running);
 int _stream(size_t *running);
+
+void _query();
 
 int main(int argc, char **argv) {
     int retval = 0;
@@ -48,6 +52,10 @@ int main(int argc, char **argv) {
             break;
     }
 
+    if (QUERY_FLAG) {
+        _query();
+    }
+
     anim_free_entries(animes, found);
     anim_cleanup();
     free(DOWNLOAD_FILE);
@@ -59,6 +67,10 @@ int main(int argc, char **argv) {
 
 int _provider(size_t *running) {
     if (!PROVIDER) {
+        if (QUERY_FLAG) {
+            return 1;
+        }
+
         size_t providers_size;
         animProvider *providers = anim_list_providers(&providers_size);
         PRINT(TEXT_COLOR "Available providers:\n");
@@ -93,7 +105,11 @@ int _provider(size_t *running) {
 
 int _search(size_t *running) {
     int cli_search = SEARCH != NULL;
-    if (!SEARCH) {
+    if (!cli_search) {
+        if (QUERY_FLAG) {
+            return 1;
+        }
+
         PRINT(TEXT_COLOR "What do you want to search: " USER_COLOR);
         SEARCH = calloc(1024, sizeof(char));
         if (!fgets(SEARCH, 1024, stdin)) {
@@ -166,6 +182,10 @@ int _episode(size_t *running) {
     }
 
     if (EPISODE == -1) {
+        if (QUERY_FLAG) {
+            return 1;
+        }
+
         PRINT(TEXT_COLOR "Episodes: \n");
         for (size_t i = 0; i < anime->parts_size; ++i) {
             PRINT(PROGRAM_COLOR "%zu - %s\n", i + 1, anime->parts[i].name);
@@ -192,6 +212,10 @@ int _source(size_t *running) {
     }
 
     if (!SOURCE) {
+        if (QUERY_FLAG) {
+            return 1;
+        }
+
         PRINT(TEXT_COLOR "Sources: \n");
         for (size_t i = 0; i < episode->sources_size; i++) {
             PRINT(PROGRAM_COLOR "%zu - %s\n", i + 1, episode->sources[i].name);
@@ -222,6 +246,10 @@ int _source(size_t *running) {
 }
 
 int _download(size_t *running) {
+    if (QUERY_FLAG) {
+        return 1;
+    }
+
     if (!DOWNLOAD_FILE) {
         PRINT(TEXT_COLOR "Where to save the anime: " USER_COLOR);
         DOWNLOAD_FILE = calloc(1024, sizeof(char));
@@ -250,6 +278,10 @@ int _download(size_t *running) {
 }
 
 int _stream(size_t *running) {
+    if (QUERY_FLAG) {
+        return 1;
+    }
+
     PRINT(TEXT_COLOR "Playing " PROGRAM_COLOR "%s (%s) ", episode->name,
           source->name);
 
@@ -269,4 +301,45 @@ int _stream(size_t *running) {
     free(result);
     (*running)++;
     return 0;
+}
+
+
+void _query() {
+    // TODO: add json support with cJSON
+    if (provider) {
+        printf("Provider: %s\n", provider->name);
+    }
+
+    if (animes) {
+        printf("Animes found: %zu\n", found);
+        for (size_t i = 0; i < found; i++) {
+            printf("[%zu] Anime name: %s\n", i, animes[i].name);
+            printf("[%zu] Anime link: %s\n", i, animes[i].link);
+        }
+    }
+
+    if(anime) {
+        printf("[SELECTED] Anime name: %s\n", anime->name);
+        printf("[SELECTED] Anime link: %s\n", anime->link);
+        printf("Episodes found: %zu\n", anime->parts_size);
+        for (size_t i = 0; i < anime->parts_size; i++) {
+            printf("[%zu] Episode name: %s\n", i, anime->parts[i].name);
+            printf("[%zu] Episode link: %s\n", i, anime->parts[i].link);
+        }
+    }
+
+    if (episode) {
+        printf("[SELECTED] Episode name: %s\n", episode->name);
+        printf("[SELECTED] Episode link: %s\n", episode->link);
+        printf("Sources found: %zu\n", episode->sources_size);
+        for (size_t i = 0; i < episode->sources_size; i++) {
+            printf("[%zu] Source name: %s\n", i, episode->sources[i].name);
+            printf("[%zu] Source link: %s\n", i, episode->sources[i].link);
+        }
+    }
+
+    if (source) {
+        printf("[SELECTED] Source name: %s\n", source->name);
+        printf("[SELECTED] Source link: %s\n", source->link);
+    }
 }
