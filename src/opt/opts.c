@@ -69,15 +69,22 @@ void parse_opts(int argc, char **argv) {
                      libanim_build_date());
             exit(0);
         case 'h':
-            log_info("anido [options]");
-            log_info("");
-            log_info("Options:");
             log_info(
-                "   -s,--stream                Enables stream mode to playback the anime instead of downloading.");
-            log_info(
-                "   -p,--player=<player>       Set player to use in stream mode.");
-            log_info("   -h,--help                  Show help.");
-            log_info("   -v,--version               Show version.");
+                "Help: \n"
+                "anido [options]\n"
+                "\n"
+                "Options:\n"
+                "   -s,--stream                Enables stream mode to playback the anime instead of downloading.\n"
+                "   -p,--player=<player>       Set player to use in stream mode.\n"
+                "   -h,--help                  Show help.\n"
+                "   -v,--version               Show version.\n"
+                "   -r,--provider=<provider>   Set provider to use.\n"
+                "   -c,--search=<search>       Set what to search. Automatically selects first result.\n"
+                "   -e,--episode=<episode>     Set episode index to select.\n"
+                "   -u,--source=<source>       Set source name to select. First one containing is selected.\n"
+                "   -d,--download=<path>       Set download path.\n"
+                "   -t,--tmp=<path>            Set tmp directory path.\n"
+                "   -q,--query                 Switches to data querying mode.\n");
             exit(0);
             break;
         }

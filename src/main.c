@@ -303,7 +303,6 @@ int _stream(size_t *running) {
     return 0;
 }
 
-
 void _query() {
     // TODO: add json support with cJSON
     if (provider) {
@@ -318,7 +317,7 @@ void _query() {
         }
     }
 
-    if(anime) {
+    if (anime) {
         printf("[SELECTED] Anime name: %s\n", anime->name);
         printf("[SELECTED] Anime link: %s\n", anime->link);
         printf("Episodes found: %zu\n", anime->parts_size);
