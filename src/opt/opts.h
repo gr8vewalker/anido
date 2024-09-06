@@ -1,7 +1,6 @@
 #ifndef ANIDO_OPTS_H
 #define ANIDO_OPTS_H
 
-extern int QUERY_FLAG;
 extern char *DOWNLOAD_FILE;
 extern char *TEMP_FOLDER;
 

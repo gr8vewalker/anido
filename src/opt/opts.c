@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int QUERY_FLAG = 0;
 char *DOWNLOAD_FILE = NULL;
 char *TEMP_FOLDER = NULL;
 
@@ -23,17 +22,13 @@ static struct option options[] = {{"help", no_argument, 0, 'h'},
                                   {"episode", required_argument, 0, 'e'},
                                   {"source", required_argument, 0, 'u'},
                                   {"download", required_argument, 0, 'd'},
-                                  {"temp", required_argument, 0, 't'},
-                                  {"query", no_argument, 0, 'q'}};
+                                  {"temp", required_argument, 0, 't'}};
 
 void parse_opts(int argc, char **argv) {
     int opt;
-    while ((opt = getopt_long(argc, argv, "hvp:s:e:u:d:t:q", options, 0)) !=
+    while ((opt = getopt_long(argc, argv, "hvp:s:e:u:d:t:", options, 0)) !=
            -1) {
         switch (opt) {
-        case 'q':
-            QUERY_FLAG = 1;
-            break;
         case 'p':
             PROVIDER = strdup(optarg);
             break;
@@ -71,8 +66,7 @@ void parse_opts(int argc, char **argv) {
                 "   -e,--episode=<episode>     Set episode index to select.\n"
                 "   -u,--source=<source>       Set source name to select. First one containing is selected.\n"
                 "   -d,--download=<path>       Set download path.\n"
-                "   -t,--tmp=<path>            Set tmp directory path.\n"
-                "   -q,--query                 Switches to data querying mode.\n");
+                "   -t,--tmp=<path>            Set tmp directory path.\n");
             exit(0);
             break;
         }
