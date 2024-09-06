@@ -18,7 +18,7 @@ int downloadfile(const char *url, const char **headers, int headers_size,
                  const char *path);
 
 typedef struct threaded_download_info {
-    char *url; 
+    char *url;
     const char **headers;
     int headers_size;
     char *path;

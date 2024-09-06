@@ -5,9 +5,8 @@
 #include <stdint.h>
 
 // For mkdir, rmdir etc.
-#include <unistd.h>
 #include <sys/stat.h>
-
+#include <unistd.h>
 
 // For String Comparison
 uint64_t murmur64(const char *key);

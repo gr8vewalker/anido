@@ -71,11 +71,10 @@ void anim_cleanup();
 
 animProvider *anim_list_providers(size_t *size);
 animProvider *anim_get_provider(char *name, int exact);
-animFilter *anim_get_filters(animProvider *provider,
-                                            size_t *size);
+animFilter *anim_get_filters(animProvider *provider, size_t *size);
 
-int anim_search(animProvider *provider, const char *input,
-                               size_t *size, animEntry **entries);
+int anim_search(animProvider *provider, const char *input, size_t *size,
+                animEntry **entries);
 int anim_details(animProvider *provider, animEntry *entry);
 int anim_sources(animProvider *provider, animPart *part);
 

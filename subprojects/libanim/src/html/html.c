@@ -1,8 +1,10 @@
 #include "libanim/html.h"
-#include <libxml/HTMLparser.h>
-#include <libxml/xpath.h>
+
 #include <stdlib.h>
 #include <string.h>
+
+#include <libxml/HTMLparser.h>
+#include <libxml/xpath.h>
 
 int load_document(const char *contents, animDocument *document) {
     document->html = htmlReadMemory(contents, strlen(contents), NULL, NULL,
@@ -35,7 +37,8 @@ char *xpath_s(const char *expression, const animDocument *document) {
     return result;
 }
 
-char *xpath_ns(const char *expression, const xmlNodePtr node, const animDocument *document) {
+char *xpath_ns(const char *expression, const xmlNodePtr node,
+               const animDocument *document) {
     xmlXPathObjectPtr obj = xpath_n(expression, node, document);
 
     char *result = (char *)xmlXPathCastToString(obj);
@@ -46,9 +49,12 @@ char *xpath_ns(const char *expression, const xmlNodePtr node, const animDocument
 }
 
 xmlXPathObjectPtr xpath(const char *expression, const animDocument *document) {
-    return xmlXPathEvalExpression((const xmlChar *)expression, document->context);
+    return xmlXPathEvalExpression((const xmlChar *)expression,
+                                  document->context);
 }
 
-xmlXPathObjectPtr xpath_n(const char *expression, const xmlNodePtr node, const animDocument *document) {
-    return xmlXPathNodeEval(node, (const xmlChar *)expression, document->context);
+xmlXPathObjectPtr xpath_n(const char *expression, const xmlNodePtr node,
+                          const animDocument *document) {
+    return xmlXPathNodeEval(node, (const xmlChar *)expression,
+                            document->context);
 }

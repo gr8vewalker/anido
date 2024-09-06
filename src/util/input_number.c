@@ -1,8 +1,8 @@
 #include "util.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 
 int input_number(long *number) {
     char buf[1024];

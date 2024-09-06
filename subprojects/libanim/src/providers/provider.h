@@ -1,8 +1,9 @@
 #ifndef LIBANIM_PROVIDER_H
 #define LIBANIM_PROVIDER_H
 
-#include "libanim/anim.h"
 #include <stdlib.h>
+
+#include "libanim/anim.h"
 
 // Useful macros for filter definition
 #define ANIM_FILTER_SELECTION(PTR, INDEX, NAME, ELEMENT_COUNT,                 \

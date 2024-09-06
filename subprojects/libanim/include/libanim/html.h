@@ -21,7 +21,7 @@ int load_document(const char *contents, animDocument *document);
 /**
  * Frees created pointers for document
  *
- * @param document Document to be freed 
+ * @param document Document to be freed
  */
 void unload_document(const animDocument *document);
 
@@ -29,11 +29,10 @@ void unload_document(const animDocument *document);
  * Evaluates a XPath expression and returns it as a string.
  *
  * @param expression XPath expression
- * @param document Document to evaluate on 
+ * @param document Document to evaluate on
  * @return The resulting string from evaluation
  */
-char *xpath_s(const char *expression,
-                             const animDocument *document);
+char *xpath_s(const char *expression, const animDocument *document);
 
 /**
  * Evaluates a XPath expression on a node and returns it as a string
@@ -44,7 +43,7 @@ char *xpath_s(const char *expression,
  * @return The resulting string from evaluation
  */
 char *xpath_ns(const char *expression, const xmlNodePtr node,
-                              const animDocument *document);
+               const animDocument *document);
 
 /**
  * Evaluates a XPath expression and returns the libxml object.
@@ -54,8 +53,7 @@ char *xpath_ns(const char *expression, const xmlNodePtr node,
  * @param document Document to evaluate on
  * @return The resulting xml object from evaluation
  */
-xmlXPathObjectPtr xpath(const char *expression,
-                                       const animDocument *document);
+xmlXPathObjectPtr xpath(const char *expression, const animDocument *document);
 
 /**
  * Evaluates a XPath expression on a node and returns the libxml object.
@@ -66,6 +64,7 @@ xmlXPathObjectPtr xpath(const char *expression,
  * @param document Document to evaluate on
  * @return The resulting xml object from evaluation
  */
-xmlXPathObjectPtr xpath_n(const char *expression, const xmlNodePtr node, const animDocument *document);
+xmlXPathObjectPtr xpath_n(const char *expression, const xmlNodePtr node,
+                          const animDocument *document);
 
 #endif

@@ -1,14 +1,16 @@
 #include "alucard.h"
-#include "libanim/anim.h"
-#include "libanim/net.h"
-#include "libanim/util.h"
-#include "src/cjson/cJSON.h"
-#include "src/extractors/extractor.h"
+
 #include <errno.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "libanim/anim.h"
+#include "libanim/net.h"
+#include "libanim/util.h"
+#include "src/cjson/cJSON.h"
+#include "src/extractors/extractor.h"
 
 static animExtractor *ALUCARD;
 
@@ -149,8 +151,9 @@ end:
         fclose(ffmpeg_concat);
 
     if (retval == 0) {
-        command = format_string("ffmpeg -safe 0 -f concat -i \"%s\" -c copy \"%s\"",
-                                concat_file, path);
+        command =
+            format_string("ffmpeg -safe 0 -f concat -i \"%s\" -c copy \"%s\"",
+                          concat_file, path);
         system(command);
     }
 

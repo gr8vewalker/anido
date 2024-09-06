@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <libxml/parser.h>
+#include <libxml/xpath.h>
+
 #include "libanim/anim.h"
 #include "libanim/html.h"
 #include "libanim/net.h"
 #include "libanim/util.h"
-#include "libxml/parser.h"
-#include "libxml/xpath.h"
 #include "src/cjson/cJSON.h"
 #include "src/extractors/alucard/alucard.h"
 #include "src/extractors/extractor.h"

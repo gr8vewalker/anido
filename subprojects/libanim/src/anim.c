@@ -1,12 +1,13 @@
 #include "libanim/anim.h"
-#include "libanim/net.h"
-#include "src/extractors/extractor.h"
-#include "src/providers/provider.h"
-#include "src/providers/tr/turkanime/turkanime.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "libanim/net.h"
+#include "src/extractors/extractor.h"
+#include "src/providers/provider.h"
+#include "src/providers/tr/turkanime/turkanime.h"
 
 static int INITIALIZED = 0;
 
