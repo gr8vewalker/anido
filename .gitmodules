@@ -1,0 +1,3 @@
+[submodule "subprojects/libanim"]
+	path = subprojects/libanim
+	url = https://github.com/gr8vewalker/libanim.git

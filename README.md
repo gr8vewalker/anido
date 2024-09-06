@@ -1,9 +1,7 @@
 # anido
 
 An anime downloader app written in C. 
-It depends on `libanim`, a web scraping anime utility library.
-
-`libanim` is still on this repo but when it gets polished enough it will be seperated.
+It uses [libanim](https://github.com/gr8vewalker/libanim), a web scraping anime utility library.
 
 # Building 
 
@@ -17,7 +15,7 @@ You need required dependencies (maybe their development packages too) to build.
 
 # Dependencies
 
-Required: `libxml2`, `curl`, `openssl`
+For libanim check [here](https://github.com/gr8vewalker/libanim?tab=readme-ov-file#dependencies)
 
 Optional (in PATH):
 
