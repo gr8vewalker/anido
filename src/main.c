@@ -30,7 +30,6 @@ int _search(size_t *running);
 int _episode(size_t *running);
 int _source(size_t *running);
 int _download(size_t *running);
-int _stream(size_t *running);
 
 void _query();
 
@@ -41,7 +40,7 @@ int main(int argc, char **argv) {
     parse_opts(argc, argv);
 
     int (*functions[5])(size_t *) = {_provider, _search, _episode, _source,
-                                     STREAM_FLAG ? _stream : _download};
+                                     _download};
 
     size_t functions_size = sizeof(functions) / sizeof(void *);
     size_t running = 0;
@@ -273,32 +272,6 @@ int _download(size_t *running) {
     PRINT(TEXT_COLOR "Download finished! File saved to " PROGRAM_COLOR "%s\n",
           DOWNLOAD_FILE);
 
-    (*running)++;
-    return 0;
-}
-
-int _stream(size_t *running) {
-    if (QUERY_FLAG) {
-        return 1;
-    }
-
-    PRINT(TEXT_COLOR "Playing " PROGRAM_COLOR "%s (%s) ", episode->name,
-          source->name);
-
-    PRINT(RESET_COLORS "\n"); // Do not color other outputs like mpv/vlc
-    char *result;
-    if (anim_stream(source, &result, tmpdir()) != 0) {
-        log_error("Stream failed! Trying to stream %s. tmp: %s", source->link,
-                  tmpdir());
-        return 1;
-    }
-
-    char *cmd = format_string("%s \"%s\"", PLAYER, result);
-
-    system(cmd);
-
-    free(cmd);
-    free(result);
     (*running)++;
     return 0;
 }
