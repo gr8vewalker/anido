@@ -3,3 +3,4 @@ build/
 builddir/
 compile_commands.json
 .cache/
+shell.nix
